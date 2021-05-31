@@ -15,24 +15,28 @@ addBtn.addEventListener("click", function (e) {
     else {
         notesObj = JSON.parse(notes);
     }
-
-    let myObj = {
-        title: addTitle.value,
-        text: addTxt.value
-    }
-    // noteObj.push(addTxt.value);
-    notesObj.push(myObj);
-    localStorage.setItem("notes", JSON.stringify(notesObj));
-    addTxt.value = "";
-    addTitle.value = "";
-    // console.log(notesObj);
-    showNotes();
+   
+    if (addTitle.value.length != 0 && addTxt.value.length != 0) {
+        let myObj = {
+            title: addTitle.value,
+            text: addTxt.value
+        }
+        notesObj.push(myObj);
+        localStorage.setItem("notes", JSON.stringify(notesObj));
+        addTxt.value = "";
+        addTitle.value = "";
+        showNotes();
+        console.log("not empty");
+    } else {
+        alert("Add Title and Description of your Note");
+    } 
 })
 
 //Function to show  elements from local Storage
 function showNotes() {
     let notes = localStorage.getItem("notes");
     if (notes == null) {
+        // console.alert("NO");
         notesObj = [];
     }
     else {
@@ -42,12 +46,17 @@ function showNotes() {
     notesObj.forEach(function (element, index) {
         html += `
         <div class="noteCard my-2 mx-2 card" style="width: 18rem;">
-                <div class="card-body">
-                    <h5 class="card-title"> ${element.title}</h5>
-                    <p class="card-text">${element.text}</p>
-                    <button id = "${index}" onclick="deleteNote(this.id)" class="btn btn-primary" style="background-color:rgb(138, 90, 90); border:1px solid rgb(138, 90, 90);">Delete Note</button>
+            <div class="card-body">
+                <div>
+                    <div class="tooltip">
+                        <span class="tooltiptext">Mark as imp</span>
+                    </div>
+                    <h5 class="card-title">${element.title}</h5> 
                 </div>
-            </div>
+                <p class="card-text">${element.text}</p>
+                <button id = "${index}" onclick="deleteNote(this.id)" class="btn btn-primary" style="background-color:rgb(138, 90, 90); border:1px solid rgb(138, 90, 90);">Delete Note</button>
+            </div>  
+        </div>
         `;
     });
     let notesElm = document.getElementById('notes');
@@ -61,8 +70,6 @@ function showNotes() {
 
 //Function to delete a note
 function deleteNote(index) {
-    // console.log('I am deleting', index);
-
     let notes = localStorage.getItem("notes");
     if (notes == null) {
         notesObj = [];
@@ -78,7 +85,6 @@ function deleteNote(index) {
 let search = document.getElementById("searchTxt");
 search.addEventListener("input", function () {
     let inputVal = search.value.toLowerCase();
-    // console.log('Input event fired..!!!',inputVal);
     let noteCards = document.getElementsByClassName('noteCard');
     Array.from(noteCards).forEach(function (element) {
         let cardTxt = element.getElementsByTagName("p")[0].innerText;
@@ -89,9 +95,24 @@ search.addEventListener("input", function () {
             element.style.display = "none";
 
         }
-        // console.log(cardTxt);
     })
 })
+
+function importantNote(index) {
+    console.log('This note is important', index);
+}
+
+//Mark a note as important
+function markImportant() {    
+    console.log("marked as important");
+    var text = document.getElementById("noteLable");
+    if (checkBox.checked == true){
+        text.style.display = "inline-flex";
+        text.style.float = "right";
+    } else {
+        text.style.display = "none";
+    }
+}
 
 /*
 1.Add a Title
